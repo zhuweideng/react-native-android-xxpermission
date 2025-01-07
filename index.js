@@ -22,6 +22,22 @@ function checkCameraPermission() {
     });
 }
 
+//相机最小权限
+function checkCameraMiniPermission() {
+    return new Promise((resolve, reject) => {
+        if (!isAndroid) {
+            reject("not support");
+            return;
+        }
+        XPERMISSION.checkCameraMiniPermission(
+            (result) => {
+                resolve(result);
+            }, () => {
+                reject("cancel");
+            });
+    });
+}
+
 //定位权限
 function checkLocationPermission() {
     return new Promise((resolve, reject) => {
@@ -100,4 +116,4 @@ function canInstallApk() {
 }
 
 // export default xpermission;
-export { isGrantedPermission, isGrantedPermissions, installApk, checkCameraPermission, checkLocationPermission ,checkStoragePermission};
+export { isGrantedPermission, isGrantedPermissions, installApk, checkCameraPermission, checkCameraMiniPermission, checkLocationPermission, checkStoragePermission };

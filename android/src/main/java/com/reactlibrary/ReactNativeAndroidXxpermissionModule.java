@@ -87,6 +87,46 @@ public class ReactNativeAndroidXxpermissionModule extends ReactContextBaseJavaMo
     }
 
     @ReactMethod
+    public void checkCameraMiniPermission(final Callback successCallback, final Callback errorCallback) {
+        // Permission.READ_EXTERNAL_STORAGE 和 Permission.MANAGE_EXTERNAL_STORAGE 二选一
+        // 如果 targetSdk >= 33，则添加 Permission.READ_MEDIA_IMAGES 和 Permission.MANAGE_EXTERNAL_STORAGE 二选一
+        // 如果 targetSdk < 33，则添加 Permission.READ_EXTERNAL_STORAGE 和 Permission.MANAGE_EXTERNAL_STORAGE 二选一
+        // TIRAMISU == 33
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            XXPermissions.with(reactContext.getCurrentActivity())
+                    .permission(Permission.CAMERA)
+                    .interceptor(new PermissionInterceptor())
+                    .request(new OnPermissionCallback() {
+                        @Override
+                        public void onGranted(@NonNull List<String> permissions, boolean allGranted) {
+                            if (!allGranted) {
+                                errorCallback.invoke("err:暂无相机权限");
+                                return;
+                            }else {
+                                successCallback.invoke("success");
+                            }
+                        }
+                    });
+        } else {
+            XXPermissions.with(reactContext.getCurrentActivity())
+                    .permission(Permission.CAMERA)
+                    .interceptor(new PermissionInterceptor())
+                    .request(new OnPermissionCallback() {
+                        @Override
+                        public void onGranted(@NonNull List<String> permissions, boolean allGranted) {
+                            if (!allGranted) {
+                                errorCallback.invoke("err:暂无相机权限");
+                                return;
+                            }else {
+                                successCallback.invoke("success");
+                            }
+                        }
+                    });
+        }
+
+    }
+
+    @ReactMethod
     public void checkLocationPermission(final Callback successCallback, final Callback errorCallback) {
         XXPermissions.with(reactContext.getCurrentActivity())
                 .permission(Permission.ACCESS_FINE_LOCATION)
